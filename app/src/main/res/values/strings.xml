@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">MyApplication</string>
+    
+    <!-- Login Screen -->
+    <string name="hello">Привет!</string>
+    <string name="fill_data_or_social">Заполните Свои Данные Или Продолжите Через Социальные Медиа</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="recover">Восстановить</string>
+    <string name="login">Войти</string>
+    <string name="first_time_create_user">Вы впервые? Создать пользователя</string>
+    
+    <!-- Register Screen -->
+    <string name="registration">Регистрация</string>
+    <string name="your_name">Ваше имя</string>
+    <string name="terms_consent">Даю согласие на обработку персональных данных</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="have_account_login">Есть аккаунт? Войти</string>
+    
+    <!-- Forgot Password Screen -->
+    <string name="forgot_password">Забыл Пароль</string>
+    <string name="enter_account_for_reset">Введите Свою Учетную Запись Для Сброса</string>
+    <string name="send">Отправить</string>
+    
+    <!-- Email Verification Screen -->
+    <string name="check_your_email">Проверьте Ваш Email</string>
+    <string name="recovery_code_sent">Мы Отправили Код Восстановления Пароля На Вашу Электронную Почту.</string>
+    
+    <!-- OTP Verification Screen -->
+    <string name="otp_verification">OTP Проверка</string>
+    <string name="check_email_for_code">Пожалуйста Проверьте Свою Электронную Почту, Чтобы Увидеть Код Подтверждения</string>
+    <string name="otp_code">OTP Код</string>
+    <string name="submit_request">Отправить запрос</string>
+</resources>
