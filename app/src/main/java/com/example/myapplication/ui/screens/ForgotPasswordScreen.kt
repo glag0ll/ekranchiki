@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,16 +32,21 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.myapplication.ui.components.EnhancedTextField
 import com.example.myapplication.ui.theme.Blue
 import com.example.myapplication.ui.theme.LightTextSecondary
 import kotlinx.coroutines.delay
+
+private const val TAG = "ForgotPasswordScreen"
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -58,8 +65,12 @@ fun ForgotPasswordScreen(
     
     // Запрашиваем фокус при запуске экрана
     LaunchedEffect(Unit) {
-        delay(300) // Небольшая задержка для лучшей работы
-        focusRequester.requestFocus()
+        try {
+            delay(300) // Небольшая задержка для лучшей работы
+            focusRequester.requestFocus()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error requesting focus: ${e.message}")
+        }
     }
 
     Scaffold(
@@ -67,7 +78,13 @@ fun ForgotPasswordScreen(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateBack() }) {
+                    IconButton(onClick = { 
+                        try {
+                            onNavigateBack()
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error navigating back: ${e.message}")
+                        }
+                    }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -83,17 +100,32 @@ fun ForgotPasswordScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "Забыл Пароль",
+                text = "Забыл пароль",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Text(
-                text = "Введите Свою Учетную Запись Для Сброса",
+                text = "Введите свою почту",
                 fontSize = 14.sp,
                 color = LightTextSecondary,
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+            )
+            
+            // Email icon and label for visual guidance
+            Icon(
+                imageVector = Icons.Default.Email,
+                contentDescription = "Email Icon",
+                tint = Blue,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            Text(
+                text = "Email адрес",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             EnhancedTextField(
@@ -118,8 +150,12 @@ fun ForgotPasswordScreen(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         if (isEmailValid) {
-                            keyboardController?.hide()
-                            onSubmit(email)
+                            try {
+                                keyboardController?.hide()
+                                onSubmit(email)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error submitting form with keyboard action: ${e.message}")
+                            }
                         } else {
                             emailError = "Некорректный формат email"
                         }
@@ -128,24 +164,45 @@ fun ForgotPasswordScreen(
                 autoFocus = true
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Мы отправим инструкции по восстановлению пароля на указанный адрес",
+                fontSize = 12.sp,
+                color = LightTextSecondary,
+                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
+                textAlign = TextAlign.Center
+            )
 
             Button(
                 onClick = { 
                     if (isEmailValid) {
-                        keyboardController?.hide()
-                        onSubmit(email) 
+                        try {
+                            keyboardController?.hide()
+                            Log.d(TAG, "Submitting email: $email")
+                            onSubmit(email)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error submitting form: ${e.message}")
+                        }
                     } else {
                         emailError = "Некорректный формат email"
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Blue,
+                    contentColor = Color.White,
+                    disabledContainerColor = Blue.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(12.dp),
                 enabled = isEmailValid
             ) {
-                Text(text = "Отправить")
+                Text(
+                    text = "Отправить",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

@@ -125,21 +125,21 @@ fun OtpVerificationScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "OTP Проверка",
+                text = "OTP проверка",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Text(
-                text = "Пожалуйста Проверьте Свою Электронную Почту, Чтобы Увидеть Код Подтверждения",
+                text = "Пожалуйста проверьте свою электронную почту, чтобы увидеть код подтверждения",
                 fontSize = 14.sp,
                 color = LightTextSecondary,
                 modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
             )
 
             Text(
-                text = "OTP Код",
+                text = "OTP код",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -148,22 +148,22 @@ fun OtpVerificationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .padding(vertical = 16.dp)
+                    .clip(RoundedCornerShape(16.dp))
                     .border(
                         width = 1.dp,
                         color = if (isFocused) Blue else Color.Gray.copy(alpha = 0.3f),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(16.dp)
                     )
                     .background(Color.White)
-                    .padding(8.dp)
+                    .padding(horizontal = 12.dp, vertical = 24.dp)
                     .onFocusChanged { isFocused = it.isFocused }
                     .focusRequester(focusRequester),
                 contentAlignment = Alignment.Center
             ) {
                 // Отображаем OTP поля
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     repeat(5) { index ->
@@ -202,7 +202,7 @@ fun OtpVerificationScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -247,11 +247,21 @@ fun OtpVerificationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Blue,
+                    contentColor = Color.White,
+                    disabledContainerColor = Blue.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(12.dp),
                 enabled = otpValue.length == 5
             ) {
-                Text(text = "Подтвердить")
+                Text(
+                    text = "Подтвердить",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }
@@ -265,20 +275,26 @@ fun OtpDigitBox(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(56.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(LightSurface)
+            .size(60.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (value.isNotEmpty()) Color.White else LightSurface)
             .border(
-                width = 1.dp,
-                color = if (isFocused) Blue else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
+                width = if (value.isNotEmpty()) 2.dp else 1.dp,
+                color = when {
+                    isFocused -> Blue
+                    value.isNotEmpty() -> Blue.copy(alpha = 0.5f)
+                    else -> Color.Gray.copy(alpha = 0.3f)
+                },
+                shape = RoundedCornerShape(12.dp)
             )
+            .padding(2.dp)
     ) {
         Text(
             text = value,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = if (value.isNotEmpty()) Color.Black else Color.Gray.copy(alpha = 0.5f)
         )
     }
 } 

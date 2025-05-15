@@ -3,7 +3,7 @@
     
     <!-- Login Screen -->
     <string name="hello">Привет!</string>
-    <string name="fill_data_or_social">Заполните Свои Данные Или Продолжите Через Социальные Медиа</string>
+    <string name="fill_data_or_social">Заполните свои данные или продолжите через социальные медиа</string>
     <string name="email">Email</string>
     <string name="password">Пароль</string>
     <string name="recover">Восстановить</string>
@@ -18,17 +18,17 @@
     <string name="have_account_login">Есть аккаунт? Войти</string>
     
     <!-- Forgot Password Screen -->
-    <string name="forgot_password">Забыл Пароль</string>
-    <string name="enter_account_for_reset">Введите Свою Учетную Запись Для Сброса</string>
+    <string name="forgot_password">Забыл пароль</string>
+    <string name="enter_account_for_reset">Введите свою почту</string>
     <string name="send">Отправить</string>
     
     <!-- Email Verification Screen -->
-    <string name="check_your_email">Проверьте Ваш Email</string>
-    <string name="recovery_code_sent">Мы Отправили Код Восстановления Пароля На Вашу Электронную Почту.</string>
+    <string name="check_your_email">Проверьте ваш email</string>
+    <string name="recovery_code_sent">Мы отправили код восстановления пароля на вашу электронную почту.</string>
     
     <!-- OTP Verification Screen -->
-    <string name="otp_verification">OTP Проверка</string>
-    <string name="check_email_for_code">Пожалуйста Проверьте Свою Электронную Почту, Чтобы Увидеть Код Подтверждения</string>
-    <string name="otp_code">OTP Код</string>
+    <string name="otp_verification">OTP проверка</string>
+    <string name="check_email_for_code">Пожалуйста проверьте свою электронную почту, чтобы увидеть код подтверждения</string>
+    <string name="otp_code">OTP код</string>
     <string name="submit_request">Отправить запрос</string>
 </resources>

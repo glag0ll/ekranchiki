@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
@@ -40,6 +41,8 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
+private const val TAG = "MainActivity"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +58,7 @@ class MainActivity : ComponentActivity() {
             method.isAccessible = true
             method.invoke(KeyboardUtils, this)
         } catch (e: Exception) {
-            // Если не сработало, ничего страшного, будем отключать toolbar для каждого поля отдельно
+            Log.e(TAG, "Error disabling keyboard toolbar: ${e.message}")
         }
         
         enableEdgeToEdge()
@@ -78,7 +81,8 @@ class MainActivity : ComponentActivity() {
                     
                     // Сбрасываем фокус и скрываем клавиатуру при навигации
                     DisposableEffect(navController) {
-                        val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, _, _ ->
+                        val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
+                            Log.d(TAG, "Navigation to: ${destination.route}")
                             focusManager.clearFocus()
                             keyboardController?.hide()
                         }
@@ -96,14 +100,23 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Login.route) {
                             LoginScreen(
                                 onNavigateToRegister = {
-                                    navController.navigate(Screen.Register.route)
+                                    try {
+                                        navController.navigate(Screen.Register.route)
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to Register: ${e.message}")
+                                    }
                                 },
                                 onNavigateToForgotPassword = {
-                                    navController.navigate(Screen.ForgotPassword.route)
+                                    try {
+                                        navController.navigate(Screen.ForgotPassword.route)
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to ForgotPassword: ${e.message}")
+                                    }
                                 },
                                 onLogin = { email, password ->
                                     // В реальном приложении здесь должна быть аутентификация
                                     // и навигация на главный экран после успешного входа
+                                    Log.d(TAG, "Login attempt with email: $email")
                                 }
                             )
                         }
@@ -111,15 +124,25 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Register.route) {
                             RegisterScreen(
                                 onNavigateToLogin = {
-                                    navController.navigate(Screen.Login.route) {
-                                        popUpTo(Screen.Login.route) { inclusive = true }
+                                    try {
+                                        navController.navigate(Screen.Login.route) {
+                                            popUpTo(Screen.Login.route) { inclusive = true }
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to Login from Register: ${e.message}")
                                     }
                                 },
                                 onRegister = { name, email, password, termsAccepted ->
                                     // В реальном приложении здесь должна быть регистрация
                                     // и возможно отправка письма для верификации
-                                    val encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.toString())
-                                    navController.navigate(Screen.EmailVerification.route + "/$encodedEmail")
+                                    try {
+                                        val encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.toString())
+                                        navController.navigate(Screen.EmailVerification.route + "/$encodedEmail")
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error during registration: ${e.message}")
+                                        // Fallback navigation if encoding fails
+                                        navController.navigate(Screen.EmailVerification.route + "/user_email")
+                                    }
                                 }
                             )
                         }
@@ -127,11 +150,23 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.ForgotPassword.route) {
                             ForgotPasswordScreen(
                                 onNavigateBack = {
-                                    navController.popBackStack()
+                                    try {
+                                        Log.d(TAG, "Navigating back from ForgotPassword")
+                                        navController.popBackStack()
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating back from ForgotPassword: ${e.message}")
+                                    }
                                 },
                                 onSubmit = { email ->
-                                    val encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.toString())
-                                    navController.navigate(Screen.EmailVerification.route + "/$encodedEmail")
+                                    try {
+                                        Log.d(TAG, "Submitting forgot password email: $email")
+                                        val encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.toString())
+                                        navController.navigate(Screen.EmailVerification.route + "/$encodedEmail")
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to EmailVerification from ForgotPassword: ${e.message}")
+                                        // Fallback navigation if encoding fails
+                                        navController.navigate(Screen.EmailVerification.route + "/user_email")
+                                    }
                                 }
                             )
                         }
@@ -141,19 +176,37 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(
                                 navArgument("email") {
                                     type = NavType.StringType
+                                    nullable = true
+                                    defaultValue = "user_email"
                                 }
                             )
                         ) { backStackEntry ->
-                            val encodedEmail = backStackEntry.arguments?.getString("email") ?: ""
-                            val email = URLDecoder.decode(encodedEmail, StandardCharsets.UTF_8.toString())
+                            val encodedEmail = backStackEntry.arguments?.getString("email") ?: "user_email"
+                            val email = try {
+                                URLDecoder.decode(encodedEmail, StandardCharsets.UTF_8.toString())
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error decoding email: ${e.message}")
+                                // Возвращаем оригинальное значение в случае ошибки декодирования
+                                encodedEmail
+                            }
+                            
+                            Log.d(TAG, "Showing EmailVerification screen for email: $email")
                             
                             EmailVerificationScreen(
                                 onNavigateBack = {
-                                    navController.popBackStack()
+                                    try {
+                                        navController.popBackStack()
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating back from EmailVerification: ${e.message}")
+                                    }
                                 },
                                 email = email,
                                 onContinue = {
-                                    navController.navigate(Screen.OtpVerification.route)
+                                    try {
+                                        navController.navigate(Screen.OtpVerification.route)
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to OtpVerification: ${e.message}")
+                                    }
                                 }
                             )
                         }
@@ -161,13 +214,22 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.OtpVerification.route) {
                             OtpVerificationScreen(
                                 onNavigateBack = {
-                                    navController.popBackStack()
+                                    try {
+                                        navController.popBackStack()
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating back from OtpVerification: ${e.message}")
+                                    }
                                 },
                                 onVerify = { otp ->
                                     // В реальном приложении здесь должна быть проверка OTP
                                     // и навигация на главный экран или экран смены пароля
-                                    navController.navigate(Screen.Login.route) {
-                                        popUpTo(Screen.Login.route) { inclusive = true }
+                                    try {
+                                        Log.d(TAG, "OTP verification with code: $otp")
+                                        navController.navigate(Screen.Login.route) {
+                                            popUpTo(Screen.Login.route) { inclusive = true }
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error navigating to Login after OTP verification: ${e.message}")
                                     }
                                 }
                             )

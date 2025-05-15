@@ -1,6 +1,9 @@
 package com.example.myapplication.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,12 +15,14 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -29,6 +34,8 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import kotlinx.coroutines.delay
+import com.example.myapplication.ui.theme.Blue
+import com.example.myapplication.ui.theme.LightSurface
 import com.example.myapplication.ui.utils.KeyboardUtils
 
 /**
@@ -53,7 +60,14 @@ fun EnhancedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textStyle: TextStyle = LocalTextStyle.current,
-    colors: TextFieldColors = TextFieldDefaults.colors(),
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = LightSurface,
+        unfocusedContainerColor = LightSurface,
+        disabledContainerColor = LightSurface,
+        cursorColor = Blue,
+        focusedIndicatorColor = Blue,
+        focusedLabelColor = Blue,
+    ),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     autoFocus: Boolean = false,
     focusDelay: Long = 300
@@ -62,9 +76,17 @@ fun EnhancedTextField(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val isPressed = interactionSource.collectIsPressedAsState()
+    val isFocused = interactionSource.collectIsFocusedAsState()
     val context = LocalContext.current
     val view = LocalView.current
     
+    // Animate the container color based on focus state
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isFocused.value) Color.White else LightSurface,
+        animationSpec = tween(durationMillis = 300),
+        label = "background"
+    )
+
     LaunchedEffect(autoFocus) {
         if (autoFocus) {
             delay(focusDelay)

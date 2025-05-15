@@ -62,14 +62,14 @@ fun EmailVerificationScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "Забыл Пароль",
+                text = "Забыл пароль",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Text(
-                text = "Введите Свою Учетную Запись Для Сброса",
+                text = "Проверьте указанную почту для получения кода",
                 fontSize = 14.sp,
                 color = LightTextSecondary,
                 modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
@@ -93,7 +93,7 @@ fun EmailVerificationScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Проверьте Ваш Email",
+                text = "Проверьте ваш email",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -101,7 +101,7 @@ fun EmailVerificationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Мы Отправили Код Восстановления Пароля На Вашу Электронную Почту.",
+                text = "Мы отправили код восстановления пароля на вашу электронную почту.",
                 textAlign = TextAlign.Center,
                 color = LightTextSecondary
             )

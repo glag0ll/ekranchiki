@@ -48,6 +48,9 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.components.EnhancedTextField
 import com.example.myapplication.ui.theme.Blue
 import com.example.myapplication.ui.theme.LightTextSecondary
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Row
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -100,7 +103,7 @@ fun LoginScreen(
             )
 
             Text(
-                text = "Заполните Свои Данные Или Продолжите Через Социальные Медиа",
+                text = "Заполните свои данные или продолжите через социальные медиа",
                 fontSize = 14.sp,
                 color = LightTextSecondary,
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
@@ -215,26 +218,41 @@ fun LoginScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Blue,
+                    contentColor = Color.White,
+                    disabledContainerColor = Blue.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(12.dp),
                 enabled = isFormValid
             ) {
-                Text(text = "Войти")
+                Text(
+                    text = "Войти",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            TextButton(
-                onClick = { onNavigateToRegister() },
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 24.dp)
             ) {
-                Text(
-                    text = "Вы впервые? Создать пользователя",
-                    textAlign = TextAlign.Center,
-                    color = Blue
-                )
+                TextButton(
+                    onClick = { onNavigateToRegister() }
+                ) {
+                    Text(
+                        text = "Вы впервые? Создать пользователя",
+                        textAlign = TextAlign.Center,
+                        color = Blue,
+                        fontSize = 15.sp
+                    )
+                }
             }
         }
     }
